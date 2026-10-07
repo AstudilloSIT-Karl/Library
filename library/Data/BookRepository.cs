@@ -22,7 +22,7 @@ public class BookRepository
         {
             BookId = reader.GetInt64(0),
             Title = reader.GetString(1),
-            Category = reader.IsDBNull(2) ? null : reader.GetString(2),   // NULL becomes null
+            Category = reader.IsDBNull(2) ? null : reader.GetString(2),
             Price = reader.IsDBNull(3) ? null : reader.GetDecimal(3)
         };
     }
@@ -38,7 +38,7 @@ public class BookRepository
         await using var command = _dataSource.CreateCommand(sql);
         await using var reader = await command.ExecuteReaderAsync();
 
-        while (await reader.ReadAsync())        // once for each row
+        while (await reader.ReadAsync())
         {
             books.Add(ReadBook(reader));
         }
@@ -46,4 +46,26 @@ public class BookRepository
         return books;
     }
 
+    // CREATE: insert a new book. The database chooses its book_id.
+    public async Task AddAsync(Book book)
+    {
+        const string sql = "INSERT INTO lending.book (title, category, price) " +
+                           "VALUES (@title, @category, @price);";
+
+        await using var command = _dataSource.CreateCommand(sql);
+
+        command.Parameters.AddWithValue("title", book.Title);
+
+        // A C# null must be sent as DBNull.Value.
+        command.Parameters.AddWithValue(
+            "category",
+            (object?)book.Category ?? DBNull.Value);
+
+        command.Parameters.AddWithValue(
+            "price",
+            (object?)book.Price ?? DBNull.Value);
+
+        await command.ExecuteNonQueryAsync();
+    }
 }
+
