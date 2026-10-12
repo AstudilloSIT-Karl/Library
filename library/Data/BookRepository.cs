@@ -30,18 +30,30 @@ public class BookRepository
     // READ: every book, sorted by title.
     public async Task<List<Book>> GetAllAsync()
     {
-        const string sql = "SELECT book_id, title, category, price FROM lending.book ORDER BY title;";
+        const string sql = """
+        SELECT book_id, title, category, price
+        FROM lending.book
+        ORDER BY title;
+        """;
 
         var books = new List<Book>();
 
-        // The command borrows a connection; 'await using' gives it back when the method ends.
         await using var command = _dataSource.CreateCommand(sql);
+        command.CommandTimeout = 30;
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
         await using var reader = await command.ExecuteReaderAsync();
+
+        Console.WriteLine(
+            $"Database response time: {stopwatch.ElapsedMilliseconds} ms");
 
         while (await reader.ReadAsync())
         {
             books.Add(ReadBook(reader));
         }
+
+        Console.WriteLine($"Books retrieved: {books.Count}");
 
         return books;
     }
