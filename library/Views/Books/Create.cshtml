@@ -1,0 +1,43 @@
+﻿@using library.Models
+@model Book
+@{
+    ViewData["Title"] = "Add a book";
+}
+ 
+<div class="mb-4">
+    <h1>📚 Add a New Book</h1>
+    <p class="text-muted">Enter the details of the book below.</p>
+</div>
+
+ 
+<form asp-action="Create" method="post" class="card card-body" style="max-width:36rem">
+ 
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+ 
+    <div class="mb-3">
+        <label asp-for="Category" class="form-label"></label>
+        <select asp-for="Category" class="form-select">
+            <option value="">(none)</option>
+            <option>Classic</option>
+            <option>Fiction</option>
+            <option>Poetry</option>
+            <option>Reference</option>
+            <option>Textbook</option>
+        </select>
+    </div>
+ 
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+ 
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-link">Cancel</a>
+    </div>
+</form>
