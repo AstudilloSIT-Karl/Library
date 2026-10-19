@@ -14,20 +14,20 @@ public class NotesController : Controller
         _notes = notes;
     }
 
-    // GET /Notes
+   
     public async Task<IActionResult> Index()
     {
         var notes = await _notes.GetAllAsync();
         return View(notes);
     }
 
-    // GET /Notes/Create
+    
     public IActionResult Create()
     {
         return View(new Note());
     }
 
-    // POST /Notes/Create
+   
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Note note)
@@ -41,7 +41,7 @@ public class NotesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET /Notes/Edit/5
+    
     public async Task<IActionResult> Edit(long id)
     {
         var note = await _notes.GetByIdAsync(id);
@@ -54,7 +54,7 @@ public class NotesController : Controller
         return View(note);
     }
 
-    // POST /Notes/Edit
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Note note)
@@ -68,7 +68,7 @@ public class NotesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // GET /Notes/Delete/5
+    
     public async Task<IActionResult> Delete(long id)
     {
         var note = await _notes.GetByIdAsync(id);
@@ -81,7 +81,7 @@ public class NotesController : Controller
         return View(note);
     }
 
-    // POST /Notes/Delete/5
+    
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(long id)

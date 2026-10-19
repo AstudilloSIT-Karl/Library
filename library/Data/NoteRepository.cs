@@ -24,7 +24,7 @@ public class NoteRepository
         };
     }
 
-    // READ: list every note, newest first.
+    
     public async Task<List<Note>> GetAllAsync()
     {
         const string sql =
@@ -44,7 +44,8 @@ public class NoteRepository
         return notes;
     }
 
-    // READ: one note by its ID.
+    
+
     public async Task<Note?> GetByIdAsync(long id)
     {
         const string sql =
@@ -59,7 +60,7 @@ public class NoteRepository
         return await reader.ReadAsync() ? ReadNote(reader) : null;
     }
 
-    // CREATE: the database supplies note_id and created_on.
+    
     public async Task AddAsync(Note note)
     {
         const string sql =
@@ -75,7 +76,7 @@ public class NoteRepository
         await command.ExecuteNonQueryAsync();
     }
 
-    // UPDATE: change the title and body.
+    
     public async Task UpdateAsync(Note note)
     {
         const string sql =
@@ -92,7 +93,7 @@ public class NoteRepository
         await command.ExecuteNonQueryAsync();
     }
 
-    // DELETE: remove one note.
+    
     public async Task DeleteAsync(long id)
     {
         const string sql =
