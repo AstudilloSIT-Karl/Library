@@ -1,9 +1,9 @@
-﻿using library.Models;
+﻿
+using library.Models;
 using Npgsql;
 
 namespace library.Data;
 
-// Every SQL statement about members lives in this class.
 public class MemberRepository
 {
     private readonly NpgsqlDataSource _dataSource;
@@ -13,7 +13,7 @@ public class MemberRepository
         _dataSource = dataSource;
     }
 
-    // Copies the current row of the reader into a Member.
+    // Copies the current row into a Member.
     private static Member ReadMember(NpgsqlDataReader reader)
     {
         return new Member
@@ -25,10 +25,15 @@ public class MemberRepository
         };
     }
 
-    // READ: every member, sorted by full name.
+    // READ: Get all members.
     public async Task<List<Member>> GetAllAsync()
     {
-        const string sql = "SELECT member_id, full_name, email, member_type FROM lending.member ORDER BY full_name;";
+        const string sql =
+            "SELECT m.member_id, m.full_name, m.email, m.member_type, COUNT(l.loan_id) " +
+            "FROM lending.member m " +
+            "LEFT JOIN lending.loan l ON l.member_id = m.member_id AND l.returned_on IS NULL " +
+            "GROUP BY m.member_id " +
+            "ORDER BY m.full_name;";
 
         var members = new List<Member>();
 
@@ -37,31 +42,37 @@ public class MemberRepository
 
         while (await reader.ReadAsync())
         {
-            members.Add(ReadMember(reader));
+            var member = ReadMember(reader);
+            member.OpenLoans = reader.GetInt64(4);
+            members.Add(member);
         }
 
         return members;
     }
 
-    // CREATE: add a new member.
+    // CREATE: Add a new member.
     public async Task AddAsync(Member member)
     {
-        const string sql = "INSERT INTO lending.member (full_name, email, member_type) " +
-                           "VALUES (@full_name, @email, @member_type);";
+        const string sql =
+            "INSERT INTO lending.member (full_name, email, member_type) " +
+            "VALUES (@full_name, @email, @member_type);";
 
         await using var command = _dataSource.CreateCommand(sql);
 
         command.Parameters.AddWithValue("full_name", member.FullName);
-        command.Parameters.AddWithValue("email", (object?)member.Email ?? DBNull.Value);
+        command.Parameters.AddWithValue("email",
+            (object?)member.Email ?? DBNull.Value);
         command.Parameters.AddWithValue("member_type", member.MemberType);
 
         await command.ExecuteNonQueryAsync();
     }
-    // READ: one member, or null if the member does not exist.
+
+    // READ: Get one member.
     public async Task<Member?> GetByIdAsync(long id)
     {
-        const string sql = "SELECT member_id, full_name, email, member_type " +
-                           "FROM lending.member WHERE member_id = @id;";
+        const string sql =
+            "SELECT member_id, full_name, email, member_type " +
+            "FROM lending.member WHERE member_id = @id;";
 
         await using var command = _dataSource.CreateCommand(sql);
         command.Parameters.AddWithValue("id", id);
@@ -71,34 +82,35 @@ public class MemberRepository
         return await reader.ReadAsync() ? ReadMember(reader) : null;
     }
 
-    // UPDATE: change one member.
+    // UPDATE: Edit a member.
     public async Task UpdateAsync(Member member)
     {
-        const string sql = "UPDATE lending.member " +
-                           "SET full_name = @full_name, email = @email, member_type = @member_type " +
-                           "WHERE member_id = @id;";
+        const string sql =
+            "UPDATE lending.member " +
+            "SET full_name = @full_name, email = @email, " +
+            "member_type = @member_type " +
+            "WHERE member_id = @id;";
 
         await using var command = _dataSource.CreateCommand(sql);
 
         command.Parameters.AddWithValue("full_name", member.FullName);
-        command.Parameters.AddWithValue("email", (object?)member.Email ?? DBNull.Value);
+        command.Parameters.AddWithValue("email",
+            (object?)member.Email ?? DBNull.Value);
         command.Parameters.AddWithValue("member_type", member.MemberType);
         command.Parameters.AddWithValue("id", member.MemberId);
 
         await command.ExecuteNonQueryAsync();
     }
 
-    // DELETE: remove one member.
+    // DELETE: Remove a member.
     public async Task DeleteAsync(long id)
     {
-        const string sql = "DELETE FROM lending.member WHERE member_id = @id;";
+        const string sql =
+            "DELETE FROM lending.member WHERE member_id = @id;";
 
         await using var command = _dataSource.CreateCommand(sql);
         command.Parameters.AddWithValue("id", id);
 
         await command.ExecuteNonQueryAsync();
     }
-
-
 }
-

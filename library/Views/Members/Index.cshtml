@@ -24,6 +24,7 @@
             <th>Full Name</th>
             <th>Email</th>
             <th>Member Type</th>
+            <th class="text-center">Open Loans</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -36,6 +37,13 @@
                 <td>@member.FullName</td>
                 <td>@(member.Email ?? "—")</td>
                 <td>@member.MemberType</td>
+
+                <!-- Open Loans Count -->
+                <td class="text-center">
+                    <span class="badge text-bg-info">
+                        @member.OpenLoans / 3
+                    </span>
+                </td>
 
                 <td class="text-end">
 
