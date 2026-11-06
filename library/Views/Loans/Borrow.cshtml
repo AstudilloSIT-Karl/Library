@@ -1,0 +1,75 @@
+﻿
+@model library.Models.BorrowForm
+
+@{
+    ViewData["Title"] = "Borrow a Book";
+}
+
+<h1 class="mb-3">Borrow a Book</h1>
+
+<div class="card card-body" style="max-width: 500px">
+
+    <form asp-controller="Loans"
+          asp-action="Borrow"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All"
+             class="text-danger mb-3">
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="MemberId"
+                   class="form-label">Select Member</label>
+
+            <select asp-for="MemberId"
+                    asp-items="ViewBag.Members"
+                    class="form-select">
+                <option value="">Select Member</option>
+            </select>
+
+            <span asp-validation-for="MemberId"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="BookId"
+                   class="form-label">Select Book</label>
+
+            <select asp-for="BookId"
+                    asp-items="ViewBag.Books"
+                    class="form-select">
+                <option value="">Select Book</option>
+            </select>
+
+            <span asp-validation-for="BookId"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DaysAllowed"
+                   class="form-label">Days Allowed</label>
+
+            <input asp-for="DaysAllowed"
+                   class="form-control" />
+
+            <span asp-validation-for="DaysAllowed"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Borrow Book
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>

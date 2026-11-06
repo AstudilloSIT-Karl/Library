@@ -1,4 +1,5 @@
-﻿using library.Data;
+﻿
+using library.Data;
 using library.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,7 +12,10 @@ public class LoansController : Controller
     private readonly MemberRepository _members;
     private readonly BookRepository _books;
 
-    public LoansController(LoanRepository loans, MemberRepository members, BookRepository books)
+    public LoansController(
+        LoanRepository loans,
+        MemberRepository members,
+        BookRepository books)
     {
         _loans = loans;
         _members = members;
@@ -22,5 +26,59 @@ public class LoansController : Controller
     {
         var loans = await _loans.GetAllAsync();
         return View(loans);
+    }
+
+    public async Task<IActionResult> Borrow()
+    {
+        await LoadDropdowns();
+        return View(new BorrowForm());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Borrow(BorrowForm form)
+    {
+        if (!ModelState.IsValid)
+        {
+            await LoadDropdowns();
+            return View(form);
+        }
+
+        var success = await _loans.BorrowAsync(
+            form.MemberId,
+            form.BookId,
+            form.DaysAllowed);
+
+        if (!success)
+        {
+            ModelState.AddModelError("",
+                "This member already has 3 open loans.");
+
+            await LoadDropdowns();
+            return View(form);
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Return(long id)
+    {
+        await _loans.ReturnAsync(id);
+        return RedirectToAction(nameof(Index));
+    }
+
+    private async Task LoadDropdowns()
+    {
+        ViewBag.Members = new SelectList(
+            await _members.GetAllAsync(),
+            "MemberId",
+            "FullName");
+
+        ViewBag.Books = new SelectList(
+            await _books.GetAllAsync(),
+            "BookId",
+            "Title");
     }
 }
