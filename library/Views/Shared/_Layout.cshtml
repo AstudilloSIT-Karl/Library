@@ -13,60 +13,53 @@
     <link rel="stylesheet" href="~/Library.styles.css" asp-append-version="true" />
 
     <style>
-            
-            body {
-                background-color: #eef4f8;
-                color: #263238;
-            }
+        body {
+            background-color: #eef4f8;
+            color: #263238;
+        }
 
-           
-            .navbar {
-                background-color: #2e5d50 !important;
-            }
+        .navbar {
+            background-color: #2e5d50 !important;
+        }
 
-                .navbar-brand,
-                .navbar .nav-link {
-                    color: white !important;
-                }
+        .navbar-brand,
+        .navbar .nav-link {
+            color: white !important;
+        }
 
-                    .navbar .nav-link:hover {
-                        color: #c8f7df !important;
-                    }
+        .navbar .nav-link:hover {
+            color: #c8f7df !important;
+        }
 
-            
-            .card {
-                border: none;
-                border-radius: 15px;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
 
-          
-            h1 {
-                color: #2e5d50;
-                font-weight: 700;
-            }
+        h1 {
+            color: #2e5d50;
+            font-weight: 700;
+        }
 
-           
-            .btn-primary {
-                background-color: #2f80ed;
-                border-color: #2f80ed;
-            }
+        .btn-primary {
+            background-color: #2f80ed;
+            border-color: #2f80ed;
+        }
 
-                .btn-primary:hover {
-                    background-color: #1f6fd1;
-                    border-color: #1f6fd1;
-                }
+        .btn-primary:hover {
+            background-color: #1f6fd1;
+            border-color: #1f6fd1;
+        }
 
-          
-            footer {
-                background-color: #ffffff;
-            }
+        footer {
+            background-color: #ffffff;
+        }
     </style>
 </head>
 
 <body>
 
-    
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -92,7 +85,6 @@
 
                     <ul class="navbar-nav flex-grow-1">
 
-                        
                         <li class="nav-item">
                             <a class="nav-link"
                                asp-area=""
@@ -102,7 +94,6 @@
                             </a>
                         </li>
 
-                      
                         <li class="nav-item">
                             <a class="nav-link"
                                asp-area=""
@@ -112,7 +103,6 @@
                             </a>
                         </li>
 
-                     
                         <li class="nav-item">
                             <a class="nav-link"
                                asp-area=""
@@ -122,7 +112,6 @@
                             </a>
                         </li>
 
-                       
                         <li class="nav-item">
                             <a class="nav-link"
                                asp-area=""
@@ -132,15 +121,24 @@
                             </a>
                         </li>
 
-                        
+     
                         <li class="nav-item">
-                            <a class="nav-link text-dark"
+                            <a class="nav-link"
                                asp-area=""
-                               asp-controller="Notes"
-                               asp-action="Index">📝 Notepad</a>
+                               asp-controller="Loans"
+                               asp-action="Index">
+                                📖 Loans
+                            </a>
                         </li>
 
-
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-area=""
+                               asp-controller="Notes"
+                               asp-action="Index">
+                                📝 Notepad
+                            </a>
+                        </li>
 
                     </ul>
                 </div>
@@ -148,14 +146,12 @@
         </nav>
     </header>
 
-  
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-  
     <footer class="border-top footer text-muted mt-4">
         <div class="container py-3">
             &copy; 2026 - My Library -
@@ -167,7 +163,6 @@
         </div>
     </footer>
 
-  
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -175,4 +170,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
-</html>

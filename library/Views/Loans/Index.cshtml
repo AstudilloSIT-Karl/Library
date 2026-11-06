@@ -1,0 +1,74 @@
+﻿
+@using library.Models
+@model List<LoanView>
+
+@{
+    ViewData["Title"] = "Loans";
+}
+
+<h1 class="mb-3">Library Loans</h1>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <h5 class="mb-3">Loan Records</h5>
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="alert alert-info">
+                No loan records found.
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Loan ID</th>
+                            <th>Member ID</th>
+                            <th>Member Name</th>
+                            <th>Book Title</th>
+                            <th>Loaned On</th>
+                            <th>Returned On</th>
+                            <th>Days Allowed</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var loan in Model)
+                        {
+                            <tr>
+                                <td>@loan.LoanId</td>
+                                <td>@loan.MemberId</td>
+                                <td>@loan.MemberName</td>
+                                <td>@loan.BookTitle</td>
+                                <td>@loan.LoanedOn.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    @(loan.ReturnedOn?.ToString("MMM dd, yyyy") ?? "Not returned")
+                                </td>
+                                <td>@loan.DaysAllowed</td>
+                                <td>
+                                    @if (loan.Status == "Overdue")
+                                    {
+                                        <span class="badge bg-danger">Overdue</span>
+                                    }
+                                    else if (loan.Status == "Returned")
+                                    {
+                                        <span class="badge bg-success">Returned</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-primary">Out</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+</div>
