@@ -6,6 +6,10 @@
 }
 
 <h1 class="mb-3">Delete a member</h1>
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
 
 <div class="card card-body" style="max-width:36rem">
 
@@ -22,12 +26,14 @@
         <dd class="col-8">@Model.MemberType</dd>
     </dl>
 
-    <form asp-action="DeleteConfirmed"
+    <form asp-action="Delete"
           asp-route-id="@Model.MemberId"
           method="post">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="MemberId" />
 
         <button type="submit" class="btn btn-danger">Delete</button>
         <a asp-action="Index" class="btn btn-link">Cancel</a>
-
     </form>
 </div>
