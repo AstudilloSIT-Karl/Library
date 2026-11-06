@@ -1,4 +1,5 @@
 ﻿
+
 using library.Data;
 using library.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,7 @@ public class LoansController : Controller
         return View(loans);
     }
 
+    [HttpGet]
     public async Task<IActionResult> Borrow()
     {
         await LoadDropdowns();
@@ -51,12 +53,15 @@ public class LoansController : Controller
 
         if (!success)
         {
-            ModelState.AddModelError("",
+            ModelState.AddModelError(
+                "",
                 "This member already has 3 open loans.");
 
             await LoadDropdowns();
             return View(form);
         }
+
+        TempData["Success"] = "Book borrowed successfully!";
 
         return RedirectToAction(nameof(Index));
     }
@@ -66,6 +71,9 @@ public class LoansController : Controller
     public async Task<IActionResult> Return(long id)
     {
         await _loans.ReturnAsync(id);
+
+        TempData["Success"] = "Book returned successfully!";
+
         return RedirectToAction(nameof(Index));
     }
 
@@ -82,3 +90,4 @@ public class LoansController : Controller
             "Title");
     }
 }
+

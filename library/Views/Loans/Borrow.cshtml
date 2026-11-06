@@ -1,75 +1,85 @@
 ﻿
+
 @model library.Models.BorrowForm
 
 @{
     ViewData["Title"] = "Borrow a Book";
 }
 
-<h1 class="mb-3">Borrow a Book</h1>
+<div class="container mt-4">
 
-<div class="card card-body" style="max-width: 500px">
+    <div class="card shadow-sm p-4"
+         style="max-width: 550px; margin: auto;">
 
-    <form asp-controller="Loans"
-          asp-action="Borrow"
-          method="post">
+        <h2 class="mb-4">📚 Borrow a Book</h2>
 
-        @Html.AntiForgeryToken()
+        <form asp-controller="Loans"
+              asp-action="Borrow"
+              method="post">
 
-        <div asp-validation-summary="All"
-             class="text-danger mb-3">
-        </div>
+            @Html.AntiForgeryToken()
 
-        <div class="mb-3">
-            <label asp-for="MemberId"
-                   class="form-label">Select Member</label>
+            <div asp-validation-summary="All"
+                 class="text-danger mb-3">
+            </div>
 
-            <select asp-for="MemberId"
-                    asp-items="ViewBag.Members"
-                    class="form-select">
-                <option value="">Select Member</option>
-            </select>
+            <div class="mb-3">
+                <label asp-for="MemberId"
+                       class="form-label">
+                    Select Member
+                </label>
 
-            <span asp-validation-for="MemberId"
-                  class="text-danger">
-            </span>
-        </div>
+                <select asp-for="MemberId"
+                        asp-items="ViewBag.Members"
+                        class="form-select">
+                    <option value="">-- Select Member --</option>
+                </select>
 
-        <div class="mb-3">
-            <label asp-for="BookId"
-                   class="form-label">Select Book</label>
+                <span asp-validation-for="MemberId"
+                      class="text-danger"></span>
+            </div>
 
-            <select asp-for="BookId"
-                    asp-items="ViewBag.Books"
-                    class="form-select">
-                <option value="">Select Book</option>
-            </select>
+            <div class="mb-3">
+                <label asp-for="BookId"
+                       class="form-label">
+                    Select Book
+                </label>
 
-            <span asp-validation-for="BookId"
-                  class="text-danger">
-            </span>
-        </div>
+                <select asp-for="BookId"
+                        asp-items="ViewBag.Books"
+                        class="form-select">
+                    <option value="">-- Select Book --</option>
+                </select>
 
-        <div class="mb-3">
-            <label asp-for="DaysAllowed"
-                   class="form-label">Days Allowed</label>
+                <span asp-validation-for="BookId"
+                      class="text-danger"></span>
+            </div>
 
-            <input asp-for="DaysAllowed"
-                   class="form-control" />
+            <div class="mb-3">
+                <label asp-for="DaysAllowed"
+                       class="form-label">
+                    Days Allowed
+                </label>
 
-            <span asp-validation-for="DaysAllowed"
-                  class="text-danger">
-            </span>
-        </div>
+                <input asp-for="DaysAllowed"
+                       class="form-control"
+                       type="number"
+                       min="1" />
 
-        <button type="submit" class="btn btn-primary">
-            Borrow Book
-        </button>
+                <span asp-validation-for="DaysAllowed"
+                      class="text-danger"></span>
+            </div>
 
-        <a asp-action="Index"
-           class="btn btn-secondary">
-            Cancel
-        </a>
+            <button type="submit"
+                    class="btn btn-primary">
+                📖 Borrow Book
+            </button>
 
-    </form>
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Cancel
+            </a>
 
+        </form>
+    </div>
 </div>
