@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿
+using Npgsql;
 using library.Data;
 using library.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,15 @@ namespace library.Controllers;
 public class MembersController : Controller
 {
     private readonly MemberRepository _members;
+    private readonly LoanRepository _loans;
 
-    public MembersController(MemberRepository members)
+    // Keep only ONE constructor
+    public MembersController(
+        MemberRepository members,
+        LoanRepository loans)
     {
         _members = members;
+        _loans = loans;
     }
 
     // GET /Members
@@ -33,9 +39,7 @@ public class MembersController : Controller
     public async Task<IActionResult> Create(Member member)
     {
         if (!ModelState.IsValid)
-        {
             return View(member);
-        }
 
         try
         {
@@ -44,21 +48,23 @@ public class MembersController : Controller
         catch (PostgresException ex) when
             (ex.SqlState == PostgresErrorCodes.UniqueViolation)
         {
-            ModelState.AddModelError("Email", "Another member already uses this email.");
+            ModelState.AddModelError(
+                "Email",
+                "Another member already uses this email.");
+
             return View(member);
         }
 
         return RedirectToAction(nameof(Index));
     }
+
     // GET /Members/Edit/5
     public async Task<IActionResult> Edit(long id)
     {
         var member = await _members.GetByIdAsync(id);
 
         if (member == null)
-        {
             return NotFound();
-        }
 
         return View(member);
     }
@@ -69,9 +75,7 @@ public class MembersController : Controller
     public async Task<IActionResult> Edit(Member member)
     {
         if (!ModelState.IsValid)
-        {
             return View(member);
-        }
 
         try
         {
@@ -80,26 +84,28 @@ public class MembersController : Controller
         catch (PostgresException ex) when
             (ex.SqlState == PostgresErrorCodes.UniqueViolation)
         {
-            ModelState.AddModelError("Email", "Another member already uses this email.");
+            ModelState.AddModelError(
+                "Email",
+                "Another member already uses this email.");
+
             return View(member);
         }
 
         return RedirectToAction(nameof(Index));
     }
 
+    // GET /Members/Delete/5
     public async Task<IActionResult> Delete(long id)
     {
         var member = await _members.GetByIdAsync(id);
 
         if (member == null)
-        {
             return NotFound();
-        }
 
         return View(member);
     }
 
-    // POST /Members/Delete/5 : the delete was confirmed.
+    // POST /Members/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(long id)
@@ -114,11 +120,10 @@ public class MembersController : Controller
             var member = await _members.GetByIdAsync(id);
 
             if (member == null)
-            {
                 return NotFound();
-            }
 
-            ViewBag.Error = "This member has loans on record, so the database will not delete them.";
+            ViewBag.Error =
+                "This member has loans on record, so the database will not delete them.";
 
             return View("Delete", member);
         }
@@ -126,4 +131,20 @@ public class MembersController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    // GET /Members/Details/5
+    public async Task<IActionResult> Details(long id)
+    {
+        var member = await _members.GetByIdAsync(id);
+
+        if (member == null)
+            return NotFound();
+
+        var details = new MemberDetails
+        {
+            Member = member,
+            Loans = await _loans.GetByMemberAsync(id)
+        };
+
+        return View(details);
+    }
 }

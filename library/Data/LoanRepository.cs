@@ -1,5 +1,4 @@
 ﻿
-
 using library.Models;
 using Npgsql;
 
@@ -67,6 +66,9 @@ public class LoanRepository
         long bookId,
         int daysAllowed)
     {
+        if (daysAllowed <= 0)
+            return false;
+
         await using var connection =
             await _dataSource.OpenConnectionAsync();
 
@@ -105,7 +107,6 @@ public class LoanRepository
                 await count.ExecuteScalarAsync());
         }
 
-        // Maximum of 3 open loans
         if (openLoans >= MaxOpenLoans)
         {
             await transaction.RollbackAsync();
